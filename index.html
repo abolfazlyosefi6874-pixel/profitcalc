@@ -851,5 +851,71 @@ function calculateProfit(){
 
 </script>
 
+<div style="margin-top:20px;text-align:center;">
+  <button id="shareBtn" style="
+    width:100%;
+    padding:14px 20px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,#6c63ff,#8f7cff);
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:0 8px 25px rgba(108,99,255,.3);
+  ">
+    📤 اشتراک‌گذاری نتیجه
+  </button>
+</div>
+
+<script>
+document.getElementById("shareBtn").addEventListener("click", async function () {
+
+  const inputs = document.querySelectorAll('input[type="number"]');
+
+  const buy = Number(inputs[0]?.value || 0);
+  const sell = Number(inputs[1]?.value || 0);
+  const extra = Number(inputs[2]?.value || 0);
+  const quantity = Number(inputs[3]?.value || 0);
+
+  const costPerUnit = buy + extra;
+  const profitPerUnit = sell - costPerUnit;
+  const totalProfit = profitPerUnit * quantity;
+  const totalRevenue = sell * quantity;
+  const totalCost = costPerUnit * quantity;
+
+  const profitPercent = costPerUnit
+    ? ((profitPerUnit / costPerUnit) * 100).toFixed(1)
+    : 0;
+
+  const text =
+`📊 گزارش ProfitCalc
+
+💰 سود کل: ${totalProfit.toLocaleString()} تومان
+📦 سود هر عدد: ${profitPerUnit.toLocaleString()} تومان
+📈 درصد سود: ${profitPercent}٪
+
+💵 فروش کل: ${totalRevenue.toLocaleString()} تومان
+💸 هزینه کل: ${totalCost.toLocaleString()} تومان
+
+🔢 تعداد: ${quantity} عدد
+
+🔗 ProfitCalc
+${window.location.href}`;
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: "نتیجه محاسبه سود",
+        text: text
+      });
+    } catch (e) {}
+  } else {
+    await navigator.clipboard.writeText(text);
+    alert("✅ نتیجه کپی شد؛ می‌توانید آن را ارسال کنید.");
+  }
+});
+</script>
+
 </body>
 </html>
